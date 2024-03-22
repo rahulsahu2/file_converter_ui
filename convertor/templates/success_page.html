@@ -1,0 +1,29 @@
+<!-- templates/success_page.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Success Page</title>
+    </head>
+    <body>
+        <h2>Success Page</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Uploaded At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt_file in receipt_files %}
+                <tr>
+                    <td>{{ receipt_file.file.name }}</td>
+                    <td>{{ receipt_file.uploaded_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
