@@ -18,62 +18,6 @@ def convert_file(file_data):
         instance = PDFFile.objects.create(file=file_data)
         file_type = check_file_type(instance.file.name)
 
-        # if file_type == "PDF":
-        #     try:
-        #         import pdfplumber
-        #         import os
-        #         import csv
-
-        #         with pdfplumber.open(file_data) as pdf:
-        #             csv_data = []
-        #             for page in pdf.pages:
-        #                 for table in page.extract_tables():
-        #                     for row in table:
-        #                         while None in row:
-        #                             row.remove(None)
-        #                         csv_data.append(row)
-
-        #         # Define function to flatten nested columns
-        #         def flatten_table(table_data):
-        #             flat_table = []
-        #             for row in table_data:
-        #                 flat_row = []
-        #                 for cell in row:
-        #                     if isinstance(cell, list):
-        #                         flat_row.extend(cell)
-        #                     else:
-        #                         flat_row.append(cell)
-        #                 flat_table.append(flat_row)
-        #             return flat_table
-
-        #         # Flatten the table data
-        #         flattened_csv_data = flatten_table(csv_data)
-
-        #         # Convert to CSV format
-        #         file_name = os.path.basename(instance.file.path)
-        #         file_name = file_name.replace(".pdf", "")
-        #         converted_csv_dir = os.path.join(settings.MEDIA_ROOT, 'receipts', 'converted_csv')
-        #         csv_filename = f"{file_name}.csv"
-        #         csv_file_path = os.path.join(converted_csv_dir, csv_filename)
-        #         csv_downloading_path = '/' + os.path.join(*csv_file_path.split('/')[-3:]) 
-
-        #         with open(csv_file_path, 'w', newline='') as csv_file:
-        #             writer = csv.writer(csv_file)
-        #             for row in flattened_csv_data:
-        #                 writer.writerow(row)
-
-        #         # Save the converted CSV file to storage
-        #         converted_file_instance = ConvertedFile.objects.create(
-        #             pdf_file=instance,
-        #             csv_file=csv_downloading_path
-        #         )
-        #         converted_file_instance.save()
-        #         return JsonResponse({'pdf_file_path': instance.file.url, 'csv_file_path': converted_file_instance.csv_file.url, 'timestamp': converted_file_instance.timestamp}, status=200)  
-
-        #     except Exception as e:
-        #         return JsonResponse({'error': str(e)}, status=500)
-
-
         if file_type == "PDF":
             try:
                 with pdfplumber.open(file_data) as pdf:
@@ -129,7 +73,7 @@ def convert_file(file_data):
 
             def upload(path):
                 import requests
-                API_KEY = 'qzvXK1W7RMLfjqQSm6OH1jm3fGmUcLCrwZtDdWbK'
+                API_KEY = 'J8RAxOGlTP4KUq1ibooA0H88gQ99mFcO0YwV3hJa'
                 url = "https://trigger.extracttable.com"
                 payload = {}
                 files={'input':open(path,'rb')}
