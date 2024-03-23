@@ -21,7 +21,7 @@ configparser==6.0.1
 constantly==15.1.0
 cssselect==1.1.0
 daal4py==2023.1.1
-datashape==0.5.4
+# datashape==0.5.4
 distro==1.9.0
 dj-database-url==2.1.0
 Django==4.2.1
