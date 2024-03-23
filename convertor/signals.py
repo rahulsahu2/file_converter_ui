@@ -66,7 +66,7 @@ def convert_file(file_data):
 
    
         elif file_type == "IMAGE":
-            
+            print("HELLO")
             import ssl
             import os    
             ssl._create_default_https_context = ssl._create_unverified_context
@@ -138,7 +138,9 @@ def convert_file(file_data):
                 except Exception as e:
                     print(str(e))
                     return JsonResponse({'massage':str(e),'img_file_path': converted_file_instance.pdf_file.file, 'csv_file_path': converted_file_instance.csv_file.url, 'timestamp': converted_file_instance.timestamp}, status=500)  
-  
+            else:
+                print(response)
+                return JsonResponse({'massage':"File not found"}, status=500)  
     except Exception as e:
         print(str(e))
         return JsonResponse({'massage':str(e)}, status=500)
