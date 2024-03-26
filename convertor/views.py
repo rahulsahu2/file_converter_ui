@@ -20,9 +20,12 @@ def get_all_result(request):
         try:
             # Retrieve all objects from the ConvertedFile model
             converted_files = ConvertedFile.objects.all().order_by('-timestamp')
+            
             # Serialize the model instances into dictionaries
             converted_files_data = []
             for converted_file in converted_files:
+                print("===================================")
+                print(converted_file)
                 converted = {
                     'pdf_file': {
                         'id': converted_file.pdf_file.id,
@@ -31,8 +34,8 @@ def get_all_result(request):
                     },
                     'csv_file': converted_file.csv_file.url,
                     'timestamp': converted_file.timestamp.isoformat(),
-                } 
-                converted_files_data.append(converted)
+                }
+                converted_files_data.append(converted)            
             return JsonResponse({'status': True,'data':converted_files_data},status=200)
         except Exception as e:
             return JsonResponse({'status': False},status=200)
