@@ -2,7 +2,6 @@ from datetime import *
 from .models import ConvertedFile,PDFFile
 import os
 import pdfplumber
-import markdown
 from django.conf import settings
 from django.http import JsonResponse
 
