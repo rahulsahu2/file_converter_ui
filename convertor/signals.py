@@ -43,7 +43,7 @@ def convert_file(file_data):
                 # Convert to CSV format
                 import os           
                 file_name = os.path.basename(instance.file.path)
-                file_name = file_name.replace(".pdf", "")
+                file_name = file_name.replace(".pdf" or ".PDF", "")
                 
                 converted_csv = os.path.join(settings.MEDIA_ROOT, 'receipts', 'converted_csv')
                 csv_filename = f"{file_name}.csv"
