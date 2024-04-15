@@ -2,6 +2,7 @@ from datetime import *
 from .models import ConvertedFile,PDFFile
 import os
 import pdfplumber
+import markdown
 from django.conf import settings
 from django.http import JsonResponse
 
@@ -32,8 +33,9 @@ def convert_file(file_data):
                                     row.remove(None)
                                 pdf_data.append(row)
                     
+                    print("========================")
                     for row in pdf_data:
-                        if len(row) < 25 and len(row)>14:
+                        if len(row) < 25 and len(row)>=14:
                             print(row)
                             csv_data.append(row)
                     print(csv_data)
