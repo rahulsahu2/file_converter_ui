@@ -8,7 +8,8 @@ from django.http import JsonResponse
 # invoice8.pdf, invoice6.pdf, invoice5.pdf, invoice3.pdf, invoice1.pdf
 def check_file_type(file_path):
     file_extension = os.path.splitext(file_path)[1].lower()
-    if file_extension == '.pdf': return "PDF"
+    if file_extension == '.pdf' or file_extension == '.PDF':
+        return "PDF"
     elif file_extension in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']: return "IMAGE"
     else: return "UNKNOWN"
 
