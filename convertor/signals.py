@@ -1,52 +1,3 @@
-"""
-# invoice1.pdf
-leftMargin = 8
-bottomMargin = 145
-rightMargin = 840
-topMargin = 260
-
-# invoice2.pdf   # single array  #BUGG
-leftMargin = 8
-bottomMargin = 145
-rightMargin = 820
-topMargin = 410
-
-# invoice3.pdf
-leftMargin = 8
-bottomMargin = 200
-rightMargin = 820
-topMargin = 300
-
-# invoice4.pdf   #single row all data column seperate
-leftMargin = 18
-bottomMargin = 220
-rightMargin = 570
-topMargin = 620
-
-# invoice5.pdf   #single row all data column seperate
-leftMargin = 8
-bottomMargin = 238
-rightMargin = 580
-topMargin = 575
-
-#invoice6.pdf
-leftMargin = 15
-topMargin = 350
-bottomMargin = 145
-rightMargin = 680
-
-# invoice8.pdf
-leftMargin = 8
-bottomMargin = 140
-rightMargin = 792
-topMargin = 400
-
-#invoice9.pdf
-leftMargin = 0
-topMargin = 710
-rightMargin = 590
-bottomMargin = 200
-"""
 
 
 import os
@@ -186,3 +137,54 @@ def convert_file(file_data,x1,y1,x2,y2):
     except Exception as e:
         print(str(e))
         return JsonResponse({'massage':str(e)}, status=500)
+
+
+"""
+# invoice1.pdf
+leftMargin = 8
+bottomMargin = 145
+rightMargin = 840
+topMargin = 260
+
+# invoice2.pdf   # single array  #BUGG
+leftMargin = 8
+bottomMargin = 145
+rightMargin = 820
+topMargin = 410
+
+# invoice3.pdf
+leftMargin = 8
+bottomMargin = 200
+rightMargin = 820
+topMargin = 300
+
+# invoice4.pdf   #single row all data column seperate
+leftMargin = 18
+bottomMargin = 220
+rightMargin = 570
+topMargin = 620
+
+# invoice5.pdf   #single row all data column seperate
+leftMargin = 8
+bottomMargin = 238
+rightMargin = 580
+topMargin = 575
+
+#invoice6.pdf
+leftMargin = 15
+topMargin = 350
+bottomMargin = 145
+rightMargin = 680
+
+# invoice8.pdf
+leftMargin = 8
+bottomMargin = 140
+rightMargin = 792
+topMargin = 400
+
+#invoice9.pdf
+leftMargin = 0
+topMargin = 710
+rightMargin = 590
+bottomMargin = 200
+"""
