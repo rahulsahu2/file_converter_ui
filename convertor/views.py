@@ -46,9 +46,13 @@ def get_all_result(request):
 
 @csrf_exempt
 def upload_file(request):
-    if request.method == 'POST' and request.FILES.get('pdf_file'):        
+    if request.method == 'POST' and request.FILES.get('pdf_file'):       
         pdf_file = request.FILES['pdf_file']
-        return convert_file(pdf_file)    
+        leftMargin = request.POST.get("leftMargin")
+        bottomMargin = request.POST.get("bottomMargin")
+        rightMargin = request.POST.get("rightMargin")
+        topMargin = request.POST.get("topMargin")
+        return convert_file(pdf_file,int(leftMargin),int(bottomMargin),int(rightMargin),int(topMargin))
     
 
 

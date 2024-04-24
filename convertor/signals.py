@@ -1,19 +1,69 @@
-from datetime import *
-from .models import ConvertedFile,PDFFile
+"""
+# invoice1.pdf
+leftMargin = 8
+bottomMargin = 145
+rightMargin = 840
+topMargin = 260
+
+# invoice2.pdf   # single array  #BUGG
+leftMargin = 8
+bottomMargin = 145
+rightMargin = 820
+topMargin = 410
+
+# invoice3.pdf
+leftMargin = 8
+bottomMargin = 200
+rightMargin = 820
+topMargin = 300
+
+# invoice4.pdf   #single row all data column seperate
+leftMargin = 18
+bottomMargin = 220
+rightMargin = 570
+topMargin = 620
+
+# invoice5.pdf   #single row all data column seperate
+leftMargin = 8
+bottomMargin = 238
+rightMargin = 580
+topMargin = 575
+
+#invoice6.pdf
+leftMargin = 15
+topMargin = 350
+bottomMargin = 145
+rightMargin = 680
+
+# invoice8.pdf
+leftMargin = 8
+bottomMargin = 140
+rightMargin = 792
+topMargin = 400
+
+#invoice9.pdf
+leftMargin = 0
+topMargin = 710
+rightMargin = 590
+bottomMargin = 200
+"""
+
+
 import os
-import pdfplumber
+import pandas as pd
+from datetime import *
 from django.conf import settings
 from django.http import JsonResponse
+from .models import ConvertedFile,PDFFile
 
-# invoice8.pdf, invoice6.pdf, invoice5.pdf, invoice3.pdf, invoice1.pdf
+
 def check_file_type(file_path):
     file_extension = os.path.splitext(file_path)[1].lower()
-    if file_extension == '.pdf' or file_extension == '.PDF':
-        return "PDF"
+    if file_extension == '.pdf' : return "PDF"
     elif file_extension in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']: return "IMAGE"
     else: return "UNKNOWN"
 
-def convert_file(file_data):
+def convert_file(file_data,x1,y1,x2,y2):
     try:
         import os
         instance = PDFFile.objects.create(file=file_data)
@@ -21,54 +71,44 @@ def convert_file(file_data):
 
         if file_type == "PDF":
             try:
-                with pdfplumber.open(file_data) as pdf:
-                    pdf_data = []
-                    csv_data=[]
-                    csv_data_main = []
+                import os
+                import pdfplumber
+                def extract_table_from_pdf(input_path, x1, y1, x2, y2, page_number=0):
+                    with pdfplumber.open(input_path) as pdf:
+                        if page_number < len(pdf.pages):
+                            page = pdf.pages[page_number]
+                            crop_region = (x1, y1, x2, y2)
+                            table = page.crop(crop_region).extract_table()
+                            return table
+                leftMargin, bottomMargin, rightMargin, topMargin = x1, y1, x2, y2
+                extracted_table = extract_table_from_pdf(file_data, leftMargin, bottomMargin, rightMargin, topMargin)
+                df = pd.DataFrame(extracted_table)
 
-                    for page in pdf.pages:
-                        for table in page.extract_tables():
-                            for row in table:
-                                while None in row:
-                                    row.remove(None)
-                                pdf_data.append(row)
-                    
-                    print("========================")
-                    for row in pdf_data:
-                        if len(row) < 25 and len(row)>=14:
-                            print(row)
-                            csv_data.append(row)
-                    print(csv_data)
-            
-                # Convert to CSV format
                 import os           
                 file_name = os.path.basename(instance.file.path)
-                file_name = file_name.replace(".pdf" or ".PDF", "")
+                file_name = file_name.replace(".pdf", "")
                 
                 converted_csv = os.path.join(settings.MEDIA_ROOT, 'receipts', 'converted_csv')
                 csv_filename = f"{file_name}.csv"
                 csv_file_path = f"{csv_filename}"
                 csv_file_path = os.path.join(converted_csv, f'{csv_filename}')
                 csv_downloading_path = '/' + os.path.join(*csv_file_path.split('/')[-3:])            
-                import csv
-                with open(csv_file_path, 'w', newline='') as csv_file:
-                    writer = csv.writer(csv_file)
-                    for row in csv_data:
-                        writer.writerow(row)
-
+                
+                # Convert to CSV format
+                df.to_csv(csv_file_path, index=False)
+                
                 # Save the converted CSV file to storage
                 converted_file_instance = ConvertedFile.objects.create(
                     pdf_file=instance,
                     csv_file=csv_downloading_path
                 )
                 converted_file_instance.save()
+
+                # return JsonResponse({"success":"success"}, status=200)  
                 return JsonResponse({'pdf_file_path': instance.file.url, 'csv_file_path': converted_file_instance.csv_file.url, 'timestamp': converted_file_instance.timestamp}, status=200)  
             except Exception as e:
                 return JsonResponse({'error': str(e)}, status=500)               
-
-   
         elif file_type == "IMAGE":
-            print("HELLO")
             import ssl
             import os    
             ssl._create_default_https_context = ssl._create_unverified_context
