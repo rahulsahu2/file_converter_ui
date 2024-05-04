@@ -1,77 +1,9 @@
-
-
 def generate_result_csv(data):
     import tempfile
     import re, csv
-    # def parse_row(row):
-    # # Split the row into its components
-    #     parts = re.split(r'(?<=\d)(?=[A-Z])', row)
-    #     print(parts, 'parts')
-    #     # Assuming the pattern is consistent across all rows
-    #     if len(parts) >= 13:
-    #         return {
-    #             "PRODUCT NAME": parts[0],
-    #             "HSN/SAC Code": parts[1],
-    #             "CAT": parts[2],
-    #             "BATCH": parts[3],
-    #             "MFG.NAME": parts[4],
-    #             "MFG.DT": parts[5],
-    #             "EXP.DT": parts[6],
-    #             "GST Rate (%)": parts[7],
-    #             "BILLED QTY": parts[8],
-    #             "FREE QTY": parts[9],
-    #             "MRP": parts[10],
-    #             "PTR": parts[11],
-    #             "RATE": parts[12],
-    #             "DISC%": parts[13],
-    #             "NET VALUE": parts[14]
-    #         }
-    #     else:
-    #         return None
     def parse_row(row):
         print(row, 'row\n')
-    # # Regex patterns for each column
-    #     product_name_pattern = r"[\w\s.-]+(?=\d+[A-Z])"
-    #     code_pattern = r"\b\d+DN\b|\b\d+DS\b"
-    #     alphanumeric_pattern = r"\b[A-Z0-9]+(?=\s)"
-    #     mfg_name_pattern = r"\b[A-Z-]+(?=\d{2}\.\d{4})"
-    #     date_pattern = r"\d{2}\.\d{4}"
-    #     numeric_pattern = r"\d+(\.\d+)?"
-
-    #     # Extracting data
-    #     product_names = re.findall(product_name_pattern, row)
-    #     codes = re.findall(code_pattern, row)
-    #     alphanumerics = re.findall(alphanumeric_pattern, row)
-    #     mfg_names = re.findall(mfg_name_pattern, row)
-    #     dates = re.findall(date_pattern, row)
-    #     numerics = re.findall(numeric_pattern, row)
-
-    #     # Assuming each product has two dates (MFG.DT and EXP.DT)
-    #     date_pairs = list(zip(dates[::2], dates[1::2]))
-
-    #     # Grouping numeric values by the number of columns
-    #     numeric_columns = 8  # Change this based on the actual number of numeric columns
-    #     numeric_groups = [numerics[i:i + numeric_columns] for i in range(0, len(numerics), numeric_columns)]
-
-    #     # Constructing result
-    #     result = []
-    #     for i in range(len(product_names)):
-    #         product_data = {
-    #             "PRODUCT NAME": product_names[i],
-    #             "HSN/SAC Code": codes[i] if i < len(codes) else None,
-    #             "CAT": alphanumerics[i * 2] if i * 2 < len(alphanumerics) else None,
-    #             "BATCH": alphanumerics[i * 2 + 1] if i * 2 + 1 < len(alphanumerics) else None,
-    #             "MFG.NAME": mfg_names[i] if i < len(mfg_names) else None,
-    #             "MFG.DT": date_pairs[i][0] if i < len(date_pairs) else None,
-    #             "EXP.DT": date_pairs[i][1] if i < len(date_pairs) else None,
-    #             "Numerics": numeric_groups[i] if i < len(numeric_groups) else None  # This contains all numeric fields
-    #         }
-    #         print(product_data, 'product_data \n \n')
-    #         print()
-    #         result.append(product_data)
-
-    #     return result
-        # Define regex patterns for each column
+    
         product_name_pattern = r".+?(?=\d{8})"
         code_pattern = r"\d{8}"
         cat_pattern = r"(DN|DS)([A-Z0-9]+)"
