@@ -1,18 +1,27 @@
 from django.conf import settings
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import render
+import requests
 import csv
 import pdfplumber
 from django.views.decorators.csrf import csrf_exempt
-from django.forms.models import model_to_dict
 from .models import ConvertedFile,PDFFile
 from datetime import *
-from django.utils import timezone
 from .signals import convert_file
 import os
-import tempfile
-import tabula
 
-BACKEND_URL = 'http://127.0.0.1:8000/media/'
+BACKEND_URL = 'http://localhost:8000/media/'
+
+
+def index(request):
+    response = requests.get('http://localhost:8000/api/get-all')
+    api_data = response.json()
+    context = {
+        'receipt_files':api_data["data"]
+    }
+    return render(request,'convert.html', context)
+
+
 
 @csrf_exempt
 def get_all_result(request):
@@ -24,8 +33,8 @@ def get_all_result(request):
             # Serialize the model instances into dictionaries
             converted_files_data = []
             for converted_file in converted_files:
-                print("===================================")
-                print(converted_file)
+                # print("===================================")
+                # print(converted_file)
                 converted = {
                     'pdf_file': {
                         'id': converted_file.pdf_file.id,

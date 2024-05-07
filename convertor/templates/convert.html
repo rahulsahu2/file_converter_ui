@@ -52,45 +52,54 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
+                  <!-- Camera Image Capture -->
+                  <!-- <h4>Capture Image from Camera</h4>
+                  <button onclick="startCamera()">Start Camera</button>
+                  <video
+                      id="cameraFeed"
+                      width="400"
+                      height="300"
+                      style="display: none"
+                      autoplay></video>
+                  <button
+                      id="captureButton"
+                      onclick="captureImage()"
+                      style="display: none">
+                      Capture
+                  </button>
+                  <img id="capturedImage" style="display: none" /> -->
+
+
+                  <!-- Upload Receipt File -->
                     <h2>Upload Receipt File</h2>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %} {{ form.as_p }}
-                        <button type="submit"
-                            class="btn btn-primary">Submit</button>
+                    <form method="post" action="" enctype="multipart/form-data">
+                        {% csrf_token %} 
+                        <input class="form-control" type="file" name="pdf_file" required>
+                        <button type="button" class="btn btn-primary"> Submit </button>
                     </form>
-                    <!-- Camera Image Capture -->
-                    <h4>Capture Image from Camera</h4>
-                    <button onclick="startCamera()">Start Camera</button>
-                    <video
-                        id="cameraFeed"
-                        width="400"
-                        height="300"
-                        style="display: none"
-                        autoplay></video>
-                    <button
-                        id="captureButton"
-                        onclick="captureImage()"
-                        style="display: none">
-                        Capture
-                    </button>
-                    <img id="capturedImage" style="display: none" />
+
+                    
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Filename</th>
-                                    <th>Uploaded At</th>
+                                    <th>PDF Filename</th>
+                                    <th>CSV Download</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for receipt_file in receipt_files %}
                                 <tr>
-                                    <td>{{ receipt_file.file.name }}</td>
-                                    <td>{{ receipt_file.uploaded_at }}</td>
+                                    <td>
+                                      <a
+                                            href="{{ url }}{{ receipt_file.pdf_file.file }}">
+                                            PDF Download File
+                                        </a>
+                                      </td>
                                     <td>
                                         <a
-                                            href="{{ url }}{{ receipt_file.converted_csv }}">
-                                            Converted file
+                                            href="{{ url }}{{ receipt_file.csv_file }}">
+                                            Download File
                                         </a>
                                     </td>
                                 </tr>
