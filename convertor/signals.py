@@ -25,13 +25,17 @@ def convert_file(file_data,x1,y1,x2,y2):
                 import os
                 import pdfplumber
                 def extract_table_from_pdf(input_path, x1, y1, x2, y2, page_number=0):
+                    print(input_path, x1, y1, x2, y2)
                     with pdfplumber.open(input_path) as pdf:
                         if page_number < len(pdf.pages):
                             page = pdf.pages[page_number]
                             crop_region = (x1, y1, x2, y2)
+                            print(crop_region)    
                             table = page.crop(crop_region).extract_table()
+                            print(table)    
                             return table
                 leftMargin, bottomMargin, rightMargin, topMargin = x1, y1, x2, y2
+
                 extracted_table = extract_table_from_pdf(file_data, leftMargin, bottomMargin, rightMargin, topMargin)
                 df = pd.DataFrame(extracted_table)
 
@@ -170,11 +174,12 @@ bottomMargin = 238
 rightMargin = 580
 topMargin = 575
 
+
 #invoice6.pdf
-leftMargin = 15
-topMargin = 350
-bottomMargin = 145
-rightMargin = 680
+leftMargin = 15    #
+topMargin = 350    #
+bottomMargin = 145 #
+rightMargin = 680  # 
 
 # invoice8.pdf
 leftMargin = 8

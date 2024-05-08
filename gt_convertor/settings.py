@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "convertor"
+    'corsheaders',
+    "convertor",
 ]
 
 MIDDLEWARE = [
@@ -38,7 +39,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+# Allow requests from any origin
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    # "http://localhost:8000/",
+    "https://file-converter-eru2.onrender.com",
+]
+
 
 ROOT_URLCONF = 'gt_convertor.urls'
 

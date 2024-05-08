@@ -8,9 +8,18 @@
         <title>Upload Receipt File</title>
 
         <!-- Bootstrap CSS -->
-        <link
-            rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+        <!-- Cropper CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <!-- Cropper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+        <!-- PDF.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
 
         <style>
       body {
@@ -46,7 +55,7 @@
       tbody tr:hover {
         background-color: #f8f9fa; /* Bootstrap's table hover color */
       }
-    </style>
+        </style>
     </head>
     <body>
         <div class="container">
@@ -70,13 +79,26 @@
                   <img id="capturedImage" style="display: none" /> -->
 
 
-                  <!-- Upload Receipt File -->
-                    <h2>Upload Receipt File</h2>
-                    <form method="post" action="" enctype="multipart/form-data">
-                        {% csrf_token %} 
-                        <input class="form-control" type="file" name="pdf_file" required>
-                        <button type="button" class="btn btn-primary"> Submit </button>
-                    </form>
+                 <!-- Upload Receipt File -->
+<div class="container mt-5">
+  <div class="row">
+      <div class="col-md-6 offset-md-3">
+          <h2 class="mb-4">Upload Files</h2>
+          <form id="uploadForm" method="post" enctype="multipart/form-data">
+              <div class="form-group">
+                  <input type="file" class="form-control" id="fileInput" name="pdf_file" accept="image/*,application/pdf" required>
+              </div>
+              <div class="form-group">
+                  <canvas id="previewCanvas" style="max-width: 100%;"></canvas>
+              </div>
+              <!-- Hidden input field for camera capture -->
+              <input type="hidden" id="id_file" name="file">
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+      </div>
+  </div>
+</div>
+
 
                     
                     <div class="table-responsive">
@@ -90,16 +112,16 @@
                             <tbody>
                                 {% for receipt_file in receipt_files %}
                                 <tr>
-                                    <td>
+                                    <td>{{ receipt_file.pdf_file.file }}
                                       <a
                                             href="{{ url }}{{ receipt_file.pdf_file.file }}">
-                                            PDF Download File
+                                            PDF File
                                         </a>
                                       </td>
-                                    <td>
+                                    <td>{{ receipt_file.csv_file }}
                                         <a
                                             href="{{ url }}{{ receipt_file.csv_file }}">
-                                            Download File
+                                            Download
                                         </a>
                                     </td>
                                 </tr>
@@ -111,13 +133,179 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS and Popper.js -->
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-        <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <script>
+       
+       
+            <script>
+
+              $(document).ready(function () {
+                  var cropper;
+              
+                  $('#fileInput').change(function (event) {
+                      var files = event.target.files;
+                      var file = files[0];
+              
+                      if (file.type === 'application/pdf') {
+                        // Display PDF
+                          displayPDF(file);
+                      } else if (file.type.startsWith('image/')) {
+                          // Display Image
+                          displayImage(file);
+                      } else {
+                          alert('Unsupported file format!');
+                      }
+                  });
+              
+                  function displayPDF(file) {
+                      var reader = new FileReader();
+                      reader.onload = function (e) {
+                          var typedarray = new Uint8Array(e.target.result);
+                          pdfjsLib.getDocument(typedarray).promise.then(function (pdf) {
+                              pdf.getPage(1).then(function (page) {
+                                  var viewport = page.getViewport({ scale: 1 });
+                                  var canvas = document.getElementById('previewCanvas');
+                                  var context = canvas.getContext('2d');
+                                  canvas.height = viewport.height;
+                                  canvas.width = viewport.width;
+                                  var renderContext = {
+                                      canvasContext: context,
+                                      viewport: viewport
+                                  };
+                                  page.render(renderContext).promise.then(function () {
+                                      if (cropper) {
+                                          cropper.destroy();
+                                      }
+                                      cropper = new Cropper(canvas, {
+                                          viewMode: 1,
+                                          dragMode: 'move',
+                                          cropBoxResizable: true,
+                                          cropBoxMovable: true,
+                                          aspectRatio: NaN,
+                                          crop: function (event) {
+                                              // Do something when crop is done
+                                          }
+                                      });
+                                  });
+                              });
+                          });
+                      };
+                      reader.readAsArrayBuffer(file);
+                  }
+              
+                  function displayImage(file) {
+                      var reader = new FileReader();
+                      reader.onload = function (e) {
+                          var image = new Image();
+                          image.src = e.target.result;
+                          image.onload = function () {
+                              var canvas = document.getElementById('previewCanvas');
+                              var ctx = canvas.getContext('2d');
+                              ctx.clearRect(0, 0, canvas.width, canvas.height);
+                              canvas.width = image.width;
+                              canvas.height = image.height;
+                              ctx.drawImage(image, 0, 0, image.width, image.height);
+              
+                              // Initialize Cropper
+                              cropper = new Cropper(canvas, {
+                                  viewMode: 1,
+                                  dragMode: 'move',
+                                  cropBoxResizable: true,
+                                  cropBoxMovable: true,
+                                  aspectRatio: NaN,
+                                  crop: function (event) {
+                                      // Do something when crop is done
+                                  }
+                              });
+                          };
+                      };
+                      reader.readAsDataURL(file);
+                  }
+              
+              $('#uploadForm').submit(function (event) 
+              {
+                  event.preventDefault();
+                  var files = $('#fileInput')[0].files;
+                  
+                  if (files.length === 0) {
+                      console.error('No file selected.');
+                      return;
+                  }
+              
+                  var croppedData = cropper.getData();
+                  var croppedImageData = cropper.getCroppedCanvas().toDataURL();
+                  var croppedImageBlob = dataURItoBlob(croppedImageData);
+              
+                  // Get coordinates
+                  var leftMargin = parseInt(croppedData.x);
+                  var bottomMargin = parseInt(croppedData.y + croppedData.height);
+                  var rightMargin = parseInt(croppedData.x + croppedData.width);
+                  var topMargin = parseInt(croppedData.y);
+              
+              
+                  
+                  var formData = new FormData();
+                 
+                  formData.append('pdf_file', files[0]); // Pass the first file from the input
+                  formData.append('x1', leftMargin);
+                  formData.append('y1', bottomMargin);
+                  formData.append('x2', rightMargin);
+                  formData.append('y2', topMargin);
+                  formData.append('croppedImage', croppedImageBlob);
+                  
+                  console.log("Test");
+                  console.log('pdf_file', files[0].name,"\nCoordinates: x1=", leftMargin, " y1=", bottomMargin, " x2=", rightMargin, " y2=", topMargin);
+                  // alert('pdf_file', files[0].name,"\nCoordinates: x1=", leftMargin, " y1=", bottomMargin, " x2=", rightMargin, " y2=", topMargin);  
+ 
+$.ajax({
+    // url: 'http://localhost:8000/api/upload',
+    url: 'https://file-converter-eru2.onrender.com/api/upload',
+    
+    type: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+        console.log("Backend success");
+        console.log(response);
+        // Reload the page
+        window.location.reload();
+    },
+    error: function (xhr, status, error) {
+        console.log("Backend Error");
+        console.error(xhr.responseText);
+        // Handle errors of the first API call
+    }
+});
+
+              });
+              
+              
+              
+                  // Function to convert data URI to Blob
+                  function dataURItoBlob(dataURI) 
+                  {
+                      var byteString = atob(dataURI.split(',')[1]);
+                      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                      var ab = new ArrayBuffer(byteString.length);
+                      var ia = new Uint8Array(ab);
+                      for (var i = 0; i < byteString.length; i++) 
+                      {
+                          ia[i] = byteString.charCodeAt(i);
+                      }
+                      var blob = new Blob([ab], { type: mimeString });
+                      return blob;
+                  }
+              
+              });
+              
+              
+              </script>
+       
+       
+       
+       
+       
+       
+            <!-- <script>
       let cameraStarted = false;
 
       async function startCamera() {
@@ -192,6 +380,6 @@
           console.error('Camera not started. Click "Start Camera" first.');
         }
       }
-    </script>
+    </script> -->
     </body>
 </html>
