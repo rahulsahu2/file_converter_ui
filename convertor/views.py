@@ -15,11 +15,12 @@ import os
 import tempfile
 import tabula
 
-BACKEND_URL = 'http://localhost:8000/media/'
+# BACKEND_URL = 'http://localhost:8000/media/'
+BACKEND_URL = 'https://file-converter-eru2.onrender.com/media/'
 
 
 def index(request):
-    response = requests.get('http://localhost:8000/api/get-all')
+    response = requests.get('https://file-converter-eru2.onrender.com/api/get-all')
     api_data = response.json()
     context = {
         'receipt_files':api_data["data"]
@@ -27,30 +28,31 @@ def index(request):
     return render(request,'convert.html', context)
 
 
-
 @csrf_exempt
 def get_all_result(request):
-    converted_files = ConvertedFile.objects.all().order_by('-timestamp')
-    # Serialize the model instances into dictionaries
-    converted_files_data = []
-    for converted_file in converted_files:
-        print("===================================")
-        print(converted_file)
-        converted = {
-            'pdf_file': {
-                    'id': converted_file.pdf_file.id,
-                    'file': converted_file.pdf_file.file.url,
-                    'timestamp': converted_file.pdf_file.timestamp.isoformat(),
+    if request.method == 'GET':
+        try:
+            converted_files = ConvertedFile.objects.all().order_by('-timestamp')
+            
+            # Serialize the model instances into dictionaries
+            converted_files_data = []
+            for converted_file in converted_files:
+                converted = {
+                    'pdf_file': {
+                        'id': converted_file.pdf_file.id,
+                        'file': converted_file.pdf_file.file.url,
+                        'timestamp': converted_file.pdf_file.timestamp.isoformat(),
                     },
-                'csv_file': converted_file.csv_file.url,
-                'timestamp': converted_file.timestamp.isoformat(),
+                    'csv_file': converted_file.csv_file.url,
+                    'timestamp': converted_file.timestamp.isoformat(),
                 }
-        converted_files_data.append(converted)            
-    return JsonResponse({'status': True,'data':converted_files_data},status=200)
-    #     except Exception as e:
-    #         return JsonResponse({'status': False},status=200)
-    # else:
-    #     return JsonResponse({'error': 'Invalid request'}, status=500)
+                converted_files_data.append(converted)            
+            return JsonResponse({'status': True,'data':converted_files_data},status=200)
+        except Exception as e:
+            return JsonResponse({'status': False},status=200)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=500)
+
 
 
 @csrf_exempt
