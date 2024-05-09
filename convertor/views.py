@@ -15,13 +15,13 @@ import os
 import tempfile
 import tabula
 
-BACKEND_URL = 'http://localhost:8000/media/'
-# BACKEND_URL = 'https://file-converter-eru2.onrender.com/media/'
+# BACKEND_URL = 'http://localhost:8000/media/'
+BACKEND_URL = 'https://file-converter-0ndt.onrender.com/media/'
 
 
 def index(request):
-    response = requests.get('http://localhost:8000/api/get-all')
-    # response = requests.get('https://file-converter-eru2.onrender.com/api/get-all')
+    # response = requests.get('http://localhost:8000/api/get-all')
+    response = requests.get('https://file-converter-0ndt.onrender.com/api/get-all')
     api_data = response.json()
     context = {
         'receipt_files':api_data["data"]
