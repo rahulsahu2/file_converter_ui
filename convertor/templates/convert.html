@@ -61,22 +61,6 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                  <!-- Camera Image Capture -->
-                  <!-- <h4>Capture Image from Camera</h4>
-                  <button onclick="startCamera()">Start Camera</button>
-                  <video
-                      id="cameraFeed"
-                      width="400"
-                      height="300"
-                      style="display: none"
-                      autoplay></video>
-                  <button
-                      id="captureButton"
-                      onclick="captureImage()"
-                      style="display: none">
-                      Capture
-                  </button>
-                  <img id="capturedImage" style="display: none" /> -->
 
 
                  <!-- Upload Receipt File -->
@@ -253,7 +237,6 @@
                   
                   console.log("Test");
                   console.log('pdf_file', files[0].name,"\nCoordinates: x1=", leftMargin, " y1=", bottomMargin, " x2=", rightMargin, " y2=", topMargin);
-                  // alert('pdf_file', files[0].name,"\nCoordinates: x1=", leftMargin, " y1=", bottomMargin, " x2=", rightMargin, " y2=", topMargin);  
  
 $.ajax({
     //url: 'http://localhost:8000/api/upload',
@@ -299,87 +282,5 @@ $.ajax({
               
               
               </script>
-       
-       
-       
-       
-       
-       
-            <!-- <script>
-      let cameraStarted = false;
-
-      async function startCamera() {
-        try {
-          const video = document.getElementById("cameraFeed");
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-          });
-          video.srcObject = stream;
-          cameraStarted = true;
-          document.getElementById("captureButton").style.display = "block";
-          document.getElementById("cameraFeed").style.display = "block";
-          document.getElementById("capturedImage").style.display = "none";
-        } catch (error) {
-          console.error("Error accessing camera:", error);
-        }
-      }
-
-      function captureImage() {
-        console.log(cameraStarted, "camers")
-        if (cameraStarted) {
-          const video = document.getElementById("cameraFeed");
-          const canvas = document.createElement("canvas");
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          const context = canvas.getContext("2d");
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-          // Display the captured image
-          const capturedImage = document.getElementById("capturedImage");
-          capturedImage.src = canvas.toDataURL("image/jpeg");
-          capturedImage.style.display = "block";
-
-          // Hide the video feed
-          video.style.display = "none";
-
-          // Set the base64 representation of the image in the hidden input field
-          const capturedImageInput =
-            document.getElementById("id_file");
-            console.log(capturedImageInput, "capturedImageInput");  
-          capturedImageInput.value = canvas.toDataURL("image/jpeg");
-          console.log(capturedImageInput)
-          
-          canvas.toBlob((blob) => {
-            const file = new File([blob], "captured_image.jpeg", { type: "image/jpeg" });
-
-            // Create a hidden form
-            const form = document.createElement("form");
-            form.style.display = "none";
-            form.method = "post";
-            form.enctype = "multipart/form-data";
-
-            // Create a file input and append it to the form
-            const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.name = "file";
-            fileInput.files = [file];
-            form.appendChild(fileInput);
-
-            // Append the form to the body and submit it
-            document.body.appendChild(form);
-            form.submit();
-
-            // Remove the form from the body
-            document.body.removeChild(form);
-
-            // Reset camera and UI
-            document.getElementById("cameraFeed").style.display = "block";
-            document.getElementById("capturedImage").style.display = "none";
-        }, "image/jpeg");
-        } else {
-          console.error('Camera not started. Click "Start Camera" first.');
-        }
-      }
-    </script> -->
     </body>
 </html>

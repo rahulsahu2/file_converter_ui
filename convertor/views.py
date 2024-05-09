@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import JsonResponse,HttpResponse
+from django.http import JsonResponse
 from django.http import JsonResponse
 from django.shortcuts import render
 import requests
@@ -9,11 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from .models import ConvertedFile,PDFFile
 from datetime import *
-from django.utils import timezone
 from .signals import convert_file
 import os
-import tempfile
-import tabula
 
 # BACKEND_URL = 'http://localhost:8000/media/'
 BACKEND_URL = 'https://file-converter-0ndt.onrender.com/media/'
